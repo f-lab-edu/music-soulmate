@@ -4,6 +4,7 @@ import com.flab.musolmate.member.domain.entity.Member;
 import com.flab.musolmate.member.domain.repository.MemberRepository;
 import com.flab.musolmate.member.web.dto.MemberSaveRequestDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberBasicService {
 
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * 회원가입
@@ -20,6 +22,7 @@ public class MemberBasicService {
      */
     @Transactional
     public Member registerMember( MemberSaveRequestDto requestDto ) {
-        return memberRepository.save( requestDto.toEntity() );
+        // 비밀번호 암호화
+        return memberRepository.save( requestDto.toEntity( passwordEncoder ) );
     }
 }

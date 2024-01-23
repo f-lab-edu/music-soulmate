@@ -4,9 +4,8 @@ import com.flab.musolmate.member.domain.entity.Member;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * 회원가입 요청 DTO
@@ -28,15 +27,15 @@ public class MemberSaveRequestDto {
     private String nickName;
 
     @Builder
-    public MemberSaveRequestDto(String email, String password, String nickName) {
+    public MemberSaveRequestDto( String email, String password, String nickName) {
         this.email = email;
         this.password = password;
         this.nickName = nickName;
     }
-    public Member toEntity() {
+    public Member toEntity( PasswordEncoder passwordEncoder ) {
         return Member.builder()
             .email(email)
-            .password(password)
+            .password( passwordEncoder.encode( password ) )
             .nickName(nickName)
             .build();
     }

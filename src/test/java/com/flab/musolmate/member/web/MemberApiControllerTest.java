@@ -12,6 +12,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
@@ -30,6 +31,9 @@ public class MemberApiControllerTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @After
     public void tearDown() throws Exception {
@@ -78,7 +82,7 @@ public class MemberApiControllerTest {
 
         List< Member > all = memberRepository.findAll();
         assertThat( all.get( 0 ).getEmail() ).isEqualTo( email );
-        assertThat( all.get( 0 ).getPassword() ).isEqualTo( password );
+        assertThat( passwordEncoder.matches( password, all.get( 0 ).getPassword() ) ).isTrue();
         assertThat( all.get( 0 ).getNickName() ).isEqualTo( nickName );
     }
 
