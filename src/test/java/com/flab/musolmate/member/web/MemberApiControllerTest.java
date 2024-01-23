@@ -35,12 +35,31 @@ public class MemberApiControllerTest {
     public void tearDown() throws Exception {
         memberRepository.deleteAll();
     }
+    @Test
+    public void member_등록실패() throws Exception {
+        // given
+        String email = "aa";
+        String password = "1234";
+        String nickName = "a";
+        MemberSaveRequestDto requestDto = MemberSaveRequestDto.builder()
+            .email( email )
+            .password( password )
+            .nickName( nickName )
+            .build();
 
+        String url = "http://localhost:" + port + "/members";
+
+        // when
+        ResponseEntity< Member > responseEntity = restTemplate.postForEntity( url, requestDto, Member.class );
+        assertThat( responseEntity.getStatusCode().is4xxClientError() );
+
+        // then
+    }
     @Test
     public void member_등록성공() throws Exception {
         // given
         String email = "aaa@gmail.com";
-        String password = "1234";
+        String password = "1234qwer";
         String nickName = "aaa";
         MemberSaveRequestDto requestDto = MemberSaveRequestDto.builder()
             .email( email )
@@ -48,14 +67,14 @@ public class MemberApiControllerTest {
             .nickName( nickName )
             .build();
 
-        String url = "http://localhost:" + port + "/member";
+        String url = "http://localhost:" + port + "/members";
 
         // when
-        ResponseEntity<Long> responseEntity = restTemplate.postForEntity( url, requestDto, Long.class );
+        ResponseEntity<Member> responseEntity = restTemplate.postForEntity( url, requestDto, Member.class );
 
         // then
         assertThat( responseEntity.getStatusCode() ).isEqualTo( HttpStatus.OK );
-        assertThat( responseEntity.getBody() ).isGreaterThan( 0L );
+        assertThat( responseEntity.getBody() ).isNotNull();
 
         List< Member > all = memberRepository.findAll();
         assertThat( all.get( 0 ).getEmail() ).isEqualTo( email );

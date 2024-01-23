@@ -1,5 +1,6 @@
 package com.flab.musolmate.member.service;
 
+import com.flab.musolmate.member.domain.entity.Member;
 import com.flab.musolmate.member.domain.repository.MemberRepository;
 import com.flab.musolmate.member.web.dto.MemberSaveRequestDto;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ public class MemberBasicService {
      * @return
      */
     @Transactional
-    public Long registerMember( MemberSaveRequestDto requestDto ) {
-        return memberRepository.save( requestDto.toEntity() ).getId();
+    public Member registerMember( MemberSaveRequestDto requestDto ) {
+        return memberRepository.save( requestDto.toEntity() );
     }
 }
