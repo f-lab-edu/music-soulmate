@@ -49,7 +49,7 @@ public class MemberRepositoryTest {
         // then
         Member member = memberList.get( 0 );
         assertEquals( member.getEmail(), memberA.getEmail() );
-        assertEquals( member.getPassword(), memberA.getPassword() );
+        assertEquals( member.getEncodedPassword(), memberA.getEncodedPassword() );
         assertEquals( member.getNickName(), memberA.getNickName() );
     }
 

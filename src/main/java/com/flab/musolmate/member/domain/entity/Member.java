@@ -18,7 +18,8 @@ public class Member extends BaseTimeEntity {
 
     private String email;
 
-    private String password;
+    @Column( name = "password", nullable = false )
+    private String encodedPassword;
 
     private String nickName;
 
@@ -29,7 +30,7 @@ public class Member extends BaseTimeEntity {
     @Builder
     public Member( String email, String password, String nickName ) {
         this.email = email;
-        this.password = password;
+        this.encodedPassword = password;
         this.nickName = nickName;
     }
 

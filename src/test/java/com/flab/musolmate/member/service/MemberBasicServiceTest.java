@@ -57,12 +57,12 @@ class MemberBasicServiceTest {
 
         // when
         Member registeredMember = memberBasicService.registerMember( requestDto );
-        System.out.println( "registeredMember.getPassword() = " + registeredMember.getPassword() );
+        System.out.println( "registeredMember.getPassword() = " + registeredMember.getEncodedPassword() );
 
         // then
         assertThat( registeredMember.getEmail() ).isEqualTo( email );
-        assertThat( passwordEncoder.matches( password, registeredMember.getPassword() ) ).isTrue();
-        assertThat( registeredMember.getPassword().length() ).isGreaterThan( 10 );
+        assertThat( passwordEncoder.matches( password, registeredMember.getEncodedPassword() ) ).isTrue();
+        assertThat( registeredMember.getEncodedPassword().length() ).isGreaterThan( 10 );
         assertThat( registeredMember.getNickName() ).isEqualTo( nickName );
 
     }
