@@ -2,7 +2,7 @@ package com.flab.musolmate.member.web;
 
 import com.flab.musolmate.member.domain.entity.Member;
 import com.flab.musolmate.member.service.MemberBasicService;
-import com.flab.musolmate.member.web.dto.MemberSaveRequestDto;
+import com.flab.musolmate.member.web.dto.MemberRegisterRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,7 +24,7 @@ public class MemberApiController {
      * @return
      */
     @PostMapping
-    public ResponseEntity<Member> registerMember( @Valid @RequestBody MemberSaveRequestDto requestDto) {
+    public ResponseEntity<Member> registerMember( @Valid @RequestBody MemberRegisterRequest requestDto) {
 
         Member registeredMember = memberBasicService.registerMember( requestDto );
         return new ResponseEntity<>( registeredMember, HttpStatus.CREATED );

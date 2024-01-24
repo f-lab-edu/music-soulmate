@@ -3,7 +3,7 @@ package com.flab.musolmate.member.service;
 import com.flab.musolmate.member.domain.entity.Member;
 import com.flab.musolmate.member.domain.repository.MemberRepository;
 import com.flab.musolmate.member.exception.DuplicateMemberException;
-import com.flab.musolmate.member.web.dto.MemberSaveRequestDto;
+import com.flab.musolmate.member.web.dto.MemberRegisterRequest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ class MemberBasicServiceTest {
     @Autowired
     MemberRepository memberRepository;
 
-    MemberSaveRequestDto requestDto;
+    MemberRegisterRequest requestDto;
 
     @BeforeEach
     public void setup() {
@@ -36,7 +36,7 @@ class MemberBasicServiceTest {
         String password = "1234qwer";
         String nickName = "aaa";
 
-        requestDto = MemberSaveRequestDto.builder()
+        requestDto = MemberRegisterRequest.builder()
             .email( email )
             .password( password )
             .nickName( nickName )
@@ -91,7 +91,7 @@ class MemberBasicServiceTest {
         assertThat( registeredMember.getNickName() ).isEqualTo( requestDto.getNickName() );
 
         // when
-        MemberSaveRequestDto requestDto2 = MemberSaveRequestDto.builder()
+        MemberRegisterRequest requestDto2 = MemberRegisterRequest.builder()
             .email( "bbb@gmail.com" )
             .password( "1234qwer" )
             .nickName( requestDto.getNickName() )

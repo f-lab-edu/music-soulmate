@@ -2,7 +2,7 @@ package com.flab.musolmate.member.web;
 
 import com.flab.musolmate.member.domain.entity.Member;
 import com.flab.musolmate.member.domain.repository.MemberRepository;
-import com.flab.musolmate.member.web.dto.MemberSaveRequestDto;
+import com.flab.musolmate.member.web.dto.MemberRegisterRequest;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,7 +45,7 @@ public class MemberApiControllerTest {
         String email = "aa";
         String password = "1234";
         String nickName = "a";
-        MemberSaveRequestDto requestDto = MemberSaveRequestDto.builder()
+        MemberRegisterRequest requestDto = MemberRegisterRequest.builder()
             .email( email )
             .password( password )
             .nickName( nickName )
@@ -67,7 +67,7 @@ public class MemberApiControllerTest {
         String email = "aaa@gmail.com";
         String password = "1234qwer";
         String nickName = "aaa";
-        MemberSaveRequestDto requestDto = MemberSaveRequestDto.builder()
+        MemberRegisterRequest requestDto = MemberRegisterRequest.builder()
             .email( email )
             .password( password )
             .nickName( nickName )

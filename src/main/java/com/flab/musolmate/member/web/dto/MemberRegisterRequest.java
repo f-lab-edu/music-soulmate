@@ -12,7 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  */
 @Getter
 @NoArgsConstructor
-public class MemberSaveRequestDto {
+public class MemberRegisterRequest {
 
     @NotBlank(message = "이메일을 입력해주세요.")
     @Email(message = "이메일 형식에 맞게 입력해주세요.")
@@ -27,7 +27,7 @@ public class MemberSaveRequestDto {
     private String nickName;
 
     @Builder
-    public MemberSaveRequestDto( String email, String password, String nickName) {
+    public MemberRegisterRequest( String email, String password, String nickName) {
         this.email = email;
         this.password = password;
         this.nickName = nickName;

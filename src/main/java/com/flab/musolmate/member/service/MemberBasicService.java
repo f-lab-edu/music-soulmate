@@ -3,7 +3,7 @@ package com.flab.musolmate.member.service;
 import com.flab.musolmate.member.domain.entity.Member;
 import com.flab.musolmate.member.domain.repository.MemberRepository;
 import com.flab.musolmate.member.exception.DuplicateMemberException;
-import com.flab.musolmate.member.web.dto.MemberSaveRequestDto;
+import com.flab.musolmate.member.web.dto.MemberRegisterRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ public class MemberBasicService {
      * @return
      */
     @Transactional
-    public Member registerMember( MemberSaveRequestDto requestDto ) {
+    public Member registerMember( MemberRegisterRequest requestDto ) {
         /* 클라이언트에서 하겠지만 서버에서 한번 더 체크 */
         // 이메일 중복 검사
         if ( memberRepository.existsByEmail( requestDto.getEmail() ) ) {
