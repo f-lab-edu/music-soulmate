@@ -34,6 +34,6 @@ public class MemberBasicService {
         }
 
         // 비밀번호 암호화 + save
-        return memberRepository.save( requestDto.toEntity( passwordEncoder ) );
+        return memberRepository.save( requestDto.toEntity( passwordEncoder.encode( requestDto.getPassword() ) ) );
     }
 }

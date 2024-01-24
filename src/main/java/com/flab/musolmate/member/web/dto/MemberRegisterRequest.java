@@ -5,7 +5,6 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * 회원가입 요청 DTO
@@ -32,10 +31,10 @@ public class MemberRegisterRequest {
         this.password = password;
         this.nickName = nickName;
     }
-    public Member toEntity( PasswordEncoder passwordEncoder ) {
+    public Member toEntity( String encodedPassword ) {
         return Member.builder()
             .email(email)
-            .password( passwordEncoder.encode( password ) )
+            .password(encodedPassword)
             .nickName(nickName)
             .build();
     }
