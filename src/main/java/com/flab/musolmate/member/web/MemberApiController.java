@@ -27,7 +27,7 @@ public class MemberApiController {
     public ResponseEntity<Member> registerMember( @Valid @RequestBody MemberSaveRequestDto requestDto) {
 
         Member registeredMember = memberBasicService.registerMember( requestDto );
-        return ResponseEntity.status( HttpStatus.OK).body( registeredMember );
+        return new ResponseEntity<>( registeredMember, HttpStatus.CREATED );
     }
 
 

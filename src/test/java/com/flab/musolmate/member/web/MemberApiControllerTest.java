@@ -54,10 +54,12 @@ public class MemberApiControllerTest {
         String url = "http://localhost:" + port + "/members";
 
         // when
-        ResponseEntity< Member > responseEntity = restTemplate.postForEntity( url, requestDto, Member.class );
-        assertThat( responseEntity.getStatusCode().is4xxClientError() );
+        ResponseEntity<Object> responseEntity = restTemplate.postForEntity( url, requestDto, Object.class );
 
         // then
+        assertThat( responseEntity.getStatusCode().is4xxClientError() );
+        System.out.println( responseEntity.getBody() );
+
     }
     @Test
     public void member_등록성공() throws Exception {
@@ -77,7 +79,7 @@ public class MemberApiControllerTest {
         ResponseEntity<Member> responseEntity = restTemplate.postForEntity( url, requestDto, Member.class );
 
         // then
-        assertThat( responseEntity.getStatusCode() ).isEqualTo( HttpStatus.OK );
+        assertThat( responseEntity.getStatusCode() ).isEqualTo( HttpStatus.CREATED );
         assertThat( responseEntity.getBody() ).isNotNull();
 
         List< Member > all = memberRepository.findAll();
