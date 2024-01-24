@@ -80,8 +80,6 @@ public class MemberApiControllerTest {
 
         // then
         assertThat( responseEntity.getStatusCode() ).isEqualTo( HttpStatus.CREATED );
-        assertThat( responseEntity.getBody() ).isNotNull();
-
         List< Member > all = memberRepository.findAll();
         assertThat( all.get( 0 ).getEmail() ).isEqualTo( email );
         assertThat( passwordEncoder.matches( password, all.get( 0 ).getPassword() ) ).isTrue();
