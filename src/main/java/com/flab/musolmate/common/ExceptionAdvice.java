@@ -29,6 +29,5 @@ public class ExceptionAdvice {
         }
         errorMessageMap.put( "errors", errorMessages );
         return new ResponseEntity<>( errorMessageMap, HttpStatus.BAD_REQUEST);
-//        return new ResponseEntity<>(e.getFieldError().getDefaultMessage(), HttpStatus.BAD_REQUEST);
     }
 }
