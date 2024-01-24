@@ -28,7 +28,7 @@ public class MemberRepositoryTest {
     public void setup() {
         memberA = Member.builder()
             .email( "aaa@gmail.com" )
-            .password( "1234" )
+            .password( "1234qwer" )
             .nickName( "aaa" )
             .build();
     }
@@ -51,6 +51,30 @@ public class MemberRepositoryTest {
         assertEquals( member.getEmail(), memberA.getEmail() );
         assertEquals( member.getPassword(), memberA.getPassword() );
         assertEquals( member.getNickName(), memberA.getNickName() );
+    }
+
+    @Test
+    public void 이메일_중복검사(){
+        // given
+        memberRepository.save( memberA );
+
+        // when
+        boolean isDuplicated = memberRepository.existsByEmail( memberA.getEmail() );
+
+        // then
+        assertTrue( isDuplicated );
+    }
+
+    @Test
+    public void 닉네임_중복검사(){
+        // given
+        memberRepository.save( memberA );
+
+        // when
+        boolean isDuplicated = memberRepository.existsByNickName( memberA.getNickName() );
+
+        // then
+        assertTrue( isDuplicated );
     }
 
     @Test
