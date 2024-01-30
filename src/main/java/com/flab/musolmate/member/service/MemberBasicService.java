@@ -3,7 +3,7 @@ package com.flab.musolmate.member.service;
 import com.flab.musolmate.member.domain.entity.Member;
 import com.flab.musolmate.member.domain.repository.MemberRepository;
 import com.flab.musolmate.member.exception.DuplicateMemberException;
-import com.flab.musolmate.member.web.dto.MemberRegisterRequest;
+import com.flab.musolmate.member.web.request.MemberRegisterRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

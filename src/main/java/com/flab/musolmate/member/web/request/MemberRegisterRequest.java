@@ -1,4 +1,4 @@
-package com.flab.musolmate.member.web.dto;
+package com.flab.musolmate.member.web.request;
 
 import com.flab.musolmate.member.domain.entity.Member;
 import jakarta.validation.constraints.Email;

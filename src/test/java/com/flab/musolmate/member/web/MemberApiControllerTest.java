@@ -2,7 +2,7 @@ package com.flab.musolmate.member.web;
 
 import com.flab.musolmate.member.domain.entity.Member;
 import com.flab.musolmate.member.domain.repository.MemberRepository;
-import com.flab.musolmate.member.web.dto.MemberRegisterRequest;
+import com.flab.musolmate.member.web.request.MemberRegisterRequest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

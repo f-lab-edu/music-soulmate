@@ -2,7 +2,7 @@ package com.flab.musolmate.member.web;
 
 import com.flab.musolmate.member.domain.entity.Member;
 import com.flab.musolmate.member.service.MemberBasicService;
-import com.flab.musolmate.member.web.dto.MemberRegisterRequest;
+import com.flab.musolmate.member.web.request.MemberRegisterRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
