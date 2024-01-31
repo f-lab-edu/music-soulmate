@@ -1,5 +1,6 @@
 package com.flab.musolmate.common.security;
 
+import com.flab.musolmate.member.web.response.LoginResponse;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -33,27 +34,13 @@ public class TokenProvider{
     private final Logger logger = LoggerFactory.getLogger( this.getClass() );
 
     private static final String AUTHORITIES_KEY = "auth";
-
-    private final String secret;
     private final long tokenValidityInMilliseconds;
 
     private Key key;
 
-    public TokenProvider( @Value( "${jwt.secret}" ) String secret,
-                          @Value( "${jwt.token-validity-in-seconds}" ) long tokenValidityInSeconds ) {
-        this.secret = secret;
+    public TokenProvider( @Value( "${jwt.token-validity-in-seconds}" ) long tokenValidityInSeconds ) {
         this.tokenValidityInMilliseconds = tokenValidityInSeconds * 1000;
-    }
-
-    /**
-     * @PostConstruct가 JSR-250 자바 표준 기술이기 때문에 afterPropertiesSet() 메소드 대신 채택함.
-     * Bean이 생성이 되고 주입을 받은 후에 secret 값을 Base64 Decode해서 key변수에 할당한다.
-     */
-    @PostConstruct
-    public void init() {
-
-        byte[] keyBytes = Decoders.BASE64.decode( secret );
-        this.key = Keys.hmacShaKeyFor( keyBytes );
+        this.key = Keys.secretKeyFor( SignatureAlgorithm.HS512 );
     }
 
     /**
@@ -61,12 +48,24 @@ public class TokenProvider{
      * @param authentication
      * @return
      */
-    public String createToken( Authentication authentication) {
+    public String createTokenString( Authentication authentication) {
         String authorities = getAuthorities( authentication );
 
         Date validity = getTokenExpirationDate();
 
         return createToken( authentication, authorities, validity );
+    }
+
+    /**
+     * Authentication 객체의 권한정보를 받아 로그인 응답 객체 생성 (token, token 만료시간)
+     * @param authentication
+     * @return
+     */
+    public LoginResponse createLoginResponse( Authentication authentication ) {
+        String authorities = getAuthorities( authentication );
+        Date validity = getTokenExpirationDate();
+        String token = createToken( authentication, authorities, validity );
+        return new LoginResponse( token, validity.getTime() );
     }
 
     /**
