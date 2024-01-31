@@ -28,11 +28,19 @@ public class MemberApiController {
         return new ResponseEntity<>( registeredMember, HttpStatus.CREATED );
     }
 
-    @GetMapping("/hello")
-    @PreAuthorize( "hasAnyAuthority('ROLE_USER')" )
-    public String hello() {
-        return "hello";
+    @GetMapping("/{id}")
+    @PreAuthorize( "hasAnyAuthority('ROLE_ADMIN')" )
+    public ResponseEntity<Member> getMember( @PathVariable Long id ) {
+        Member member = memberBasicService.getMemberWithAuthorities( id ).orElse( null );
+        if ( member == null ) {
+            return new ResponseEntity<>( HttpStatus.NOT_FOUND ); // TODO. 커스텀 예외 처리
+        }
+        return ResponseEntity.ok( member );
     }
 
-
+    @GetMapping("/me")
+    @PreAuthorize( "hasAnyAuthority('ROLE_USER')" )
+    public ResponseEntity<Member> getMyMember() {
+        return ResponseEntity.ok( memberBasicService.getMyMemberWithAthorities().get() );
+    }
 }

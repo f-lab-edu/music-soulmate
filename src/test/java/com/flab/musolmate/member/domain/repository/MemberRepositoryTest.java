@@ -120,4 +120,23 @@ public class MemberRepositoryTest {
 
     }
 
+    @Test
+    public void memberId_기준으로_Member_조회() {
+        // given
+        memberRepository.save( memberA );
+        authorityRepository.save( authUser );
+
+        // when
+        Member member = memberRepository.findOneWithAuthoritiesById( memberA.getId() )
+            .orElseThrow( () -> new IllegalArgumentException( "해당 유저가 없습니다." ) );
+
+        // then
+        assertThat( member.getEmail() ).isEqualTo( memberA.getEmail() );
+
+        member.getAuthorities().forEach( authority -> {
+            assertThat( authority.getAuthorityName() ).isEqualTo( authUser.getAuthorityName() );
+        } );
+
+    }
+
 }

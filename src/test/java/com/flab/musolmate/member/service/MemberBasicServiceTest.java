@@ -6,6 +6,7 @@ import com.flab.musolmate.member.exception.DuplicateMemberException;
 import com.flab.musolmate.member.web.request.MemberRegisterRequest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -75,7 +76,7 @@ class MemberBasicServiceTest {
         // when
         assertThatThrownBy( () -> memberBasicService.registerMember( requestDto ) )
             .isInstanceOf( DuplicateMemberException.class )
-            .hasMessageContaining( "이미 존재하는 이메일입니다." );
+            .hasMessageContaining( "이미 가입한 회원입니다." );
 
     }
 
@@ -99,6 +100,24 @@ class MemberBasicServiceTest {
             .isInstanceOf( DuplicateMemberException.class )
             .hasMessageContaining( "이미 존재하는 닉네임입니다." );
 
+    }
+
+    @Test
+    @DisplayName( "Member의 id로 권한 정보를 포함한 회원 정보를 조회할 수 있다" )
+    public void 회원정보_조회(){
+        // given
+        Member registeredMember = memberBasicService.registerMember( requestDto );
+        assertThat( registeredMember.getId() ).isNotNull();
+        assertThat( registeredMember.getEmail() ).isEqualTo( requestDto.getEmail() );
+
+        // when
+        Member member = memberBasicService.getMemberWithAuthorities( registeredMember.getId() ).get();
+
+        // then
+        assertThat( member.getId() ).isEqualTo( registeredMember.getId() );
+        assertThat( member.getEmail() ).isEqualTo( registeredMember.getEmail() );
+        assertThat( member.getEncodedPassword() ).isEqualTo( registeredMember.getEncodedPassword() );
+        assertThat( member.getNickName() ).isEqualTo( registeredMember.getNickName() );
     }
 
 }

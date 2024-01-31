@@ -1,5 +1,6 @@
 package com.flab.musolmate.member.service;
 
+import com.flab.musolmate.common.SecurityUtil;
 import com.flab.musolmate.member.domain.entity.Authority;
 import com.flab.musolmate.member.domain.entity.Member;
 import com.flab.musolmate.member.domain.repository.MemberRepository;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -34,6 +36,26 @@ public class MemberBasicService {
         Authority userAuthority = makeUserAuthority();
 
         return memberRepository.save( requestDto.toEntity( passwordEncoder.encode( requestDto.getPassword() ), Collections.singleton( userAuthority ) ) );
+    }
+
+
+    /**
+     * Member의 id로 회원 정보와 해당 회원의 권한 정보 조회
+     * @param id
+     * @return
+     */
+    @Transactional(readOnly = true) // 성능 향상을 위해 readOnly = true로 설정한다는데 정말 큰 차이가 있을까?
+    public Optional<Member> getMemberWithAuthorities( Long id ) {
+        return memberRepository.findOneWithAuthoritiesById( id );
+    }
+
+    /**
+     * 현재 SecurityContext에 저장된 회원 정보와 해당 회원의 권한 정보 조회
+     * @return
+     */
+    @Transactional(readOnly = true)
+    public Optional<Member> getMyMemberWithAthorities() {
+        return SecurityUtil.getCurrentUserEmail().flatMap( memberRepository::findOneWithAuthoritiesByEmail );
     }
 
     private void checkDuplicateEmailAndNickName( MemberRegisterRequest requestDto ) {

@@ -18,4 +18,7 @@ public interface MemberRepository extends JpaRepository< Member, Long> {
      */
     @EntityGraph(attributePaths = "authorities") // Eager 조회로 쿼리 수행
     Optional<Member> findOneWithAuthoritiesByEmail( String email );
+
+    @EntityGraph(attributePaths = "authorities") // Eager 조회로 쿼리 수행
+    Optional<Member> findOneWithAuthoritiesById( Long id );
 }
