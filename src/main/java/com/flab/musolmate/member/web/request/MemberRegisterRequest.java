@@ -1,10 +1,13 @@
 package com.flab.musolmate.member.web.request;
 
+import com.flab.musolmate.member.domain.entity.Authority;
 import com.flab.musolmate.member.domain.entity.Member;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+
+import java.util.Set;
 
 /**
  * 회원가입 요청 DTO
@@ -31,11 +34,12 @@ public class MemberRegisterRequest {
         this.password = password;
         this.nickName = nickName;
     }
-    public Member toEntity( String encodedPassword ) {
+    public Member toEntity( String encodedPassword, Set< Authority > authorities ) {
         return Member.builder()
             .email(email)
             .password(encodedPassword)
             .nickName(nickName)
+            .authorities( authorities )
             .build();
     }
 }
