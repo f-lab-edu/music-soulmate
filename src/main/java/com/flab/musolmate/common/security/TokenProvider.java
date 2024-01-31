@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 public class TokenProvider{
     private final Logger logger = LoggerFactory.getLogger( this.getClass() );
 
-    private static final String AUTHORITIES_KEY = "auth";
+    private static final String AUTHORITIES_KEY = "authorities";
     private final long tokenValidityInMilliseconds;
 
     private Key key;
