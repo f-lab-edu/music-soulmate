@@ -2,15 +2,13 @@ package com.flab.musolmate.member.web;
 
 import com.flab.musolmate.member.domain.entity.Member;
 import com.flab.musolmate.member.service.MemberBasicService;
-import com.flab.musolmate.member.web.dto.MemberRegisterRequest;
+import com.flab.musolmate.member.web.request.MemberRegisterRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -30,5 +28,19 @@ public class MemberApiController {
         return new ResponseEntity<>( registeredMember, HttpStatus.CREATED );
     }
 
+    @GetMapping("/{id}")
+    @PreAuthorize( "hasAnyAuthority('ROLE_ADMIN')" )
+    public ResponseEntity<Member> getMember( @PathVariable Long id ) {
+        Member member = memberBasicService.getMemberWithAuthorities( id ).orElse( null );
+        if ( member == null ) {
+            return new ResponseEntity<>( HttpStatus.NOT_FOUND ); // TODO. 커스텀 예외 처리
+        }
+        return ResponseEntity.ok( member );
+    }
 
+    @GetMapping("/me")
+    @PreAuthorize( "hasAnyAuthority('ROLE_USER')" )
+    public ResponseEntity<Member> getMyMember() {
+        return ResponseEntity.ok( memberBasicService.getMyMemberWithAthorities().get() );
+    }
 }

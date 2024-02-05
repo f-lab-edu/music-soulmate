@@ -2,8 +2,8 @@ package com.flab.musolmate.member.web;
 
 import com.flab.musolmate.member.domain.entity.Member;
 import com.flab.musolmate.member.domain.repository.MemberRepository;
-import com.flab.musolmate.member.web.dto.MemberRegisterRequest;
-import org.junit.jupiter.api.AfterEach;
+import com.flab.musolmate.member.web.request.MemberRegisterRequest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,7 +32,7 @@ public class MemberApiControllerTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @AfterEach
+    @BeforeEach
     public void tearDown() throws Exception {
         memberRepository.deleteAll();
     }
@@ -77,10 +77,19 @@ public class MemberApiControllerTest {
 
         // then
         assertThat( responseEntity.getStatusCode() ).isEqualTo( HttpStatus.CREATED );
-        List< Member > all = memberRepository.findAll();
-        assertThat( all.get( 0 ).getEmail() ).isEqualTo( email );
-        assertThat( passwordEncoder.matches( password, all.get( 0 ).getEncodedPassword() ) ).isTrue();
-        assertThat( all.get( 0 ).getNickName() ).isEqualTo( nickName );
+
+        memberRepository.findOneWithAuthoritiesByEmail( email )
+            .ifPresent(
+                member -> {
+                    assertThat( member.getEmail() ).isEqualTo( email );
+                    assertThat( passwordEncoder.matches( password, member.getEncodedPassword() ) ).isTrue();
+                    assertThat( member.getNickName() ).isEqualTo( nickName );
+
+                    member.getAuthorities().forEach( authority -> {
+                        assertThat( authority.getAuthorityName() ).isEqualTo( "ROLE_USER" );
+                    });
+            });
+
     }
 
 }
