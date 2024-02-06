@@ -85,10 +85,11 @@ public class MemberApiControllerTest {
                     assertThat( passwordEncoder.matches( password, member.getEncodedPassword() ) ).isTrue();
                     assertThat( member.getNickName() ).isEqualTo( nickName );
 
-                    member.getAuthorities().forEach( authority -> {
-                        assertThat( authority.getAuthorityName() ).isEqualTo( "ROLE_USER" );
+                    member.getAuthorities()
+                        .forEach( authority -> {
+                            assertThat( authority.getAuthority() ).isEqualTo( "ROLE_USER" );
+                        });
                     });
-            });
 
     }
 

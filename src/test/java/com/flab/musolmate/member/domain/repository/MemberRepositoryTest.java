@@ -114,9 +114,11 @@ public class MemberRepositoryTest {
         // then
         assertThat( member.getEmail() ).isEqualTo( memberA.getEmail() );
 
-        member.getAuthorities().forEach( authority -> {
-            assertThat( authority.getAuthorityName() ).isEqualTo( authUser.getAuthorityName() );
-        } );
+
+        member.getAuthorities()
+            .forEach( authority -> {
+                assertThat( authority.getAuthority() ).isEqualTo( authUser.getAuthorityName()  );
+            });
 
     }
 
@@ -133,9 +135,10 @@ public class MemberRepositoryTest {
         // then
         assertThat( member.getEmail() ).isEqualTo( memberA.getEmail() );
 
-        member.getAuthorities().forEach( authority -> {
-            assertThat( authority.getAuthorityName() ).isEqualTo( authUser.getAuthorityName() );
-        } );
+        member.getAuthorities()
+            .forEach( authority -> {
+                assertThat( authority.getAuthority() ).isEqualTo( authUser.getAuthorityName()  );
+            });
 
     }
 
