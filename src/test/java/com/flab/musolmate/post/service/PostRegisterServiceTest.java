@@ -23,6 +23,7 @@ class PostRegisterServiceTest {
     @AfterEach
     public void tearDown() {
         postRepository.deleteAll();
+        memberRepository.deleteAll();
     }
 
     @Test
@@ -41,12 +42,13 @@ class PostRegisterServiceTest {
 
 
         // when
-        postRegisterService.registerPost( requestDto, member );
+        postRegisterService.registerPost( member, requestDto );
 
         // then
         assertThat( postRepository.findAll() ).hasSize( 1 );
         assertThat( postRepository.findAll().get( 0 ).getContent() ).isEqualTo( content );
         assertThat( postRepository.findAll().get( 0 ).isPrivate() ).isEqualTo( isPrivate );
+        assertThat( postRepository.findAll().get( 0 ).getMember().getId() ).isEqualTo( member.getId() );
     }
 
     @Test
@@ -64,7 +66,7 @@ class PostRegisterServiceTest {
 
 
         // when -> then: error
-        Assertions.assertThatThrownBy( () -> postRegisterService.registerPost( requestDto, member ) )
+        Assertions.assertThatThrownBy( () -> postRegisterService.registerPost( member, requestDto ) )
             .isInstanceOf( ConstraintViolationException.class );
     }
 

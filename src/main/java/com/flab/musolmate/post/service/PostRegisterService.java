@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 public class PostRegisterService {
     private final PostRepository postRepository;
 
-    public void registerPost( PostRegisterRequest postRequest, Member member ) {
-        Post post = postRequest.toEntity( member );
+    public void registerPost( Member loginMember, PostRegisterRequest postRequest) {
+        Post post = postRequest.toEntity( loginMember );
         postRepository.save( post );
     }
 }

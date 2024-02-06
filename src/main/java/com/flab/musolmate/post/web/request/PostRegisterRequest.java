@@ -7,6 +7,7 @@ import lombok.*;
 
 @Getter
 @Builder
+@AllArgsConstructor
 public class PostRegisterRequest {
 
     @NotEmpty(message = "내용을 입력해주세요.")
@@ -14,7 +15,6 @@ public class PostRegisterRequest {
 
 //    private Music music; // TODO. 음악 링크 (옵션)
 
-    @NotEmpty
     private boolean isPrivate; // 비공개 여부
 
     public Post toEntity( Member member ) {
