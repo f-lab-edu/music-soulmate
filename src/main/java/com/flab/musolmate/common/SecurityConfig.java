@@ -1,9 +1,6 @@
 package com.flab.musolmate.common;
 
-import com.flab.musolmate.common.security.JwtAccessDeniedHandler;
-import com.flab.musolmate.common.security.JwtAuthenticationEntryPoint;
-import com.flab.musolmate.common.security.JwtSecurityConfig;
-import com.flab.musolmate.common.security.TokenProvider;
+import com.flab.musolmate.common.security.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +16,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
@@ -69,7 +67,8 @@ public class SecurityConfig {
                 .anyRequest().authenticated() // 그 외 경로는 인증 필요
             )
 
-            .apply( new JwtSecurityConfig(tokenProvider) ); // jwtFilter를 addFilterBefore로 등록했던 Configurer를 적용
+            .addFilterBefore( new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class ) // JwtFilter를 UsernamePasswordAuthenticationFilter 앞에 추가
+            ;
 
         return http.build();
     }
