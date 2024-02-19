@@ -43,9 +43,7 @@ class PostControllerTest {
 
     @MockBean(name = "userDetailsService")
     CustomUserDetailService customUserDetailService;
-
-    static final String PATH_POST_BASE = "/posts";
-    static final String PATH_POST_REGISTER = "/register";
+    static final String PATH_POST_REGISTER = "/posts/register";
 
     @BeforeEach
     public void setUp() {
@@ -70,8 +68,7 @@ class PostControllerTest {
             .email( "admin@gmail.com" )
             .password( "1234qwer" )
             .nickName( "aaa" )
-//            .authorities( Set.of( authAdmin, authUser ) )
-            .authorities( Set.of( authAdmin ) )
+            .authorities( Set.of( authAdmin, authUser ) )
             .build();
 
 
@@ -95,8 +92,8 @@ class PostControllerTest {
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonContents = objectMapper.writeValueAsString( postRegisterRequest );
 
-        // when
-        mockMvc.perform(post( PATH_POST_BASE + PATH_POST_REGISTER )
+        // when / then
+        mockMvc.perform(post( PATH_POST_REGISTER )
                 .contentType( MediaType.APPLICATION_JSON)
                 .content( jsonContents ))
             .andExpect(status().isCreated())
