@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 
-@Component
+@Component("delegatedAuthenticationEntryPoint")
 public class DelegatedAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     @Autowired

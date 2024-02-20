@@ -39,6 +39,7 @@ public class SecurityConfig {
     private final TokenProvider tokenProvider;
 
     @Autowired
+    @Qualifier("delegatedAuthenticationEntryPoint")
     private final AuthenticationEntryPoint authenticationEntryPoint;
 
 

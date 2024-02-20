@@ -10,13 +10,13 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.*;
 
 @RestControllerAdvice
 @Slf4j
-public class ExceptionAdvice {
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+public class ExceptionAdvice extends ResponseEntityExceptionHandler {
     public ResponseEntity< Map<String, List<String>>> validationNotValidException( MethodArgumentNotValidException e) {
         List< ObjectError > allErrors = e.getBindingResult().getAllErrors();
 

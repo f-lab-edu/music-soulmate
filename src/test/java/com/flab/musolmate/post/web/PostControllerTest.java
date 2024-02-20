@@ -2,8 +2,6 @@ package com.flab.musolmate.post.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.musolmate.common.SecurityConfig;
-import com.flab.musolmate.common.security.JwtAccessDeniedHandler;
-import com.flab.musolmate.common.security.JwtAuthenticationEntryPoint;
 import com.flab.musolmate.common.security.TokenProvider;
 import com.flab.musolmate.member.domain.entity.Authority;
 import com.flab.musolmate.member.domain.entity.Member;
@@ -23,6 +21,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.*;
 import org.springframework.security.test.context.support.TestExecutionEvent;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Set;
@@ -33,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = PostController.class)
 @Import( SecurityConfig.class)
-@MockBeans( {@MockBean(PostRegisterService.class),@MockBean(PostRepository.class), @MockBean( TokenProvider.class), @MockBean( JwtAuthenticationEntryPoint.class ), @MockBean( JwtAccessDeniedHandler.class ) })
+@MockBeans( {@MockBean(PostRegisterService.class),@MockBean(PostRepository.class), @MockBean( TokenProvider.class)})
 class PostControllerTest {
 
     @Autowired
@@ -41,6 +40,10 @@ class PostControllerTest {
 
     @MockBean(name = "userDetailsService")
     CustomUserDetailService customUserDetailService;
+
+    @MockBean(name = "delegatedAuthenticationEntryPoint")
+    AuthenticationEntryPoint authenticationEntryPoint;
+
     static final String PATH_POST_REGISTER = "/posts/register";
 
     @BeforeEach
