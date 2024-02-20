@@ -2,6 +2,8 @@ package com.flab.musolmate.common;
 
 import com.flab.musolmate.common.security.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +17,9 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -33,8 +37,9 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfig {
 
     private final TokenProvider tokenProvider;
-    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+
+    @Autowired
+    private final AuthenticationEntryPoint authenticationEntryPoint;
 
 
     @Bean
@@ -48,8 +53,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable()) // CSRF 비활성화
 
             .exceptionHandling(exceptionHandling -> exceptionHandling
-                .authenticationEntryPoint(jwtAuthenticationEntryPoint)  // 인증 실패 처리
-                .accessDeniedHandler(jwtAccessDeniedHandler)            // 인가 실패 처리
+                .authenticationEntryPoint(authenticationEntryPoint)  // 인증 실패시
             )
 
             .headers(headers -> headers
