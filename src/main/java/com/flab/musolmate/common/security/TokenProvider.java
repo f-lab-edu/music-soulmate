@@ -2,10 +2,8 @@ package com.flab.musolmate.common.security;
 
 import com.flab.musolmate.member.web.response.LoginResponse;
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,14 +12,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -36,11 +32,14 @@ public class TokenProvider{
     private static final String AUTHORITIES_KEY = "authorities";
     private final long tokenValidityInMilliseconds;
 
+    private final UserDetailsService userDetailsService;
+
     private Key key;
 
-    public TokenProvider( @Value( "${jwt.token-validity-in-seconds}" ) long tokenValidityInSeconds ) {
+    public TokenProvider( @Value( "${jwt.token-validity-in-seconds}" ) long tokenValidityInSeconds, UserDetailsService userDetailsService ) {
         this.tokenValidityInMilliseconds = tokenValidityInSeconds * 1000;
         this.key = Keys.secretKeyFor( SignatureAlgorithm.HS512 );
+        this.userDetailsService = userDetailsService;
     }
 
     /**
@@ -78,7 +77,7 @@ public class TokenProvider{
 
         Collection<? extends GrantedAuthority> authorities = getAuthoritiesFromClaims( claims );
 
-        User principal = new User( claims.getSubject(), "", authorities );
+        UserDetails principal = userDetailsService.loadUserByUsername( claims.getSubject() );
 
         return new UsernamePasswordAuthenticationToken( principal, token, authorities ); // 유저정보, 토큰, 권한정보 => Authentication 객체 생성
     }
@@ -100,12 +99,6 @@ public class TokenProvider{
         return false;
     }
 
-
-    private String getAuthorities( Authentication authentication ) {
-        return authentication.getAuthorities().stream()
-            .map( GrantedAuthority::getAuthority )
-            .collect( Collectors.joining( "," ) );
-    }
 
     /**
      * 토큰 만료시간 = 토큰을 생성한 시간 + 토큰 유효시간
@@ -138,6 +131,12 @@ public class TokenProvider{
         return Arrays.stream( claims.get( AUTHORITIES_KEY ).toString().split( "," ) )
             .map( SimpleGrantedAuthority::new )
             .collect( Collectors.toList() );
+    }
+
+    private String getAuthorities( Authentication authentication ) {
+        return authentication.getAuthorities().stream()
+            .map( GrantedAuthority::getAuthority )
+            .collect( Collectors.joining( "," ) );
     }
 
 
