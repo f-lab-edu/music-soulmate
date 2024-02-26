@@ -2,12 +2,9 @@ package com.flab.musolmate.post.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.musolmate.common.SecurityConfig;
-import com.flab.musolmate.common.security.JwtAccessDeniedHandler;
-import com.flab.musolmate.common.security.JwtAuthenticationEntryPoint;
 import com.flab.musolmate.common.security.TokenProvider;
 import com.flab.musolmate.member.domain.entity.Authority;
 import com.flab.musolmate.member.domain.entity.Member;
-import com.flab.musolmate.member.domain.repository.MemberRepository;
 import com.flab.musolmate.member.service.CustomUserDetailService;
 import com.flab.musolmate.post.domain.repository.PostRepository;
 import com.flab.musolmate.post.service.PostRegisterService;
@@ -23,8 +20,8 @@ import org.springframework.boot.test.mock.mockito.MockBeans;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.*;
 import org.springframework.security.test.context.support.TestExecutionEvent;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Set;
@@ -35,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = PostController.class)
 @Import( SecurityConfig.class)
-@MockBeans( {@MockBean(PostRegisterService.class),@MockBean(PostRepository.class), @MockBean( TokenProvider.class), @MockBean( JwtAuthenticationEntryPoint.class ), @MockBean( JwtAccessDeniedHandler.class ) })
+@MockBeans( {@MockBean(PostRegisterService.class),@MockBean(PostRepository.class), @MockBean( TokenProvider.class)})
 class PostControllerTest {
 
     @Autowired
@@ -43,6 +40,10 @@ class PostControllerTest {
 
     @MockBean(name = "userDetailsService")
     CustomUserDetailService customUserDetailService;
+
+    @MockBean(name = "delegatedAuthenticationEntryPoint")
+    AuthenticationEntryPoint authenticationEntryPoint;
+
     static final String PATH_POST_REGISTER = "/posts/register";
 
     @BeforeEach
@@ -71,9 +72,20 @@ class PostControllerTest {
             .authorities( Set.of( authAdmin, authUser ) )
             .build();
 
+        Authority authNone = Authority.builder()
+            .authorityName( "ROLE_NONE" )
+            .build();
+
+        Member memberNoAuth = Member.builder()
+            .email( "nono@gmail.com" )
+            .password( "1234qwer" )
+            .nickName( "aaa" )
+            .authorities( Set.of( authNone ) )
+            .build();
 
         Mockito.when(customUserDetailService.loadUserByUsername("user@gmail.com")).thenReturn(memberUser);
         Mockito.when(customUserDetailService.loadUserByUsername("admin@gmail.com")).thenReturn(memberAdmin);
+        Mockito.when(customUserDetailService.loadUserByUsername("nono@gmail.com")).thenReturn(memberNoAuth);
 
     }
 
@@ -97,6 +109,29 @@ class PostControllerTest {
                 .contentType( MediaType.APPLICATION_JSON)
                 .content( jsonContents ))
             .andExpect(status().isCreated())
+        ;
+    }
+
+    @Test
+    @DisplayName( "권한이 없는 회원은 피드 게시물을 등록할 수 없다" )
+    @WithUserDetails( setupBefore = TestExecutionEvent.TEST_EXECUTION, value = "nono@gmail.com", userDetailsServiceBeanName = "userDetailsService" )
+    public void 피드_게시물_등록_실패() throws Exception {
+
+
+        // given
+        PostRegisterRequest postRegisterRequest = PostRegisterRequest.builder()
+            .content( "Test Content" )
+            .isPrivate( true )
+            .build();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonContents = objectMapper.writeValueAsString( postRegisterRequest );
+
+        // when / then
+        mockMvc.perform(post( PATH_POST_REGISTER )
+                .contentType( MediaType.APPLICATION_JSON)
+                .content( jsonContents ))
+            .andExpect(status().isForbidden() )
         ;
     }
 
