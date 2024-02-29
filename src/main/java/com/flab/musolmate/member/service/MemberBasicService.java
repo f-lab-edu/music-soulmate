@@ -61,7 +61,7 @@ public class MemberBasicService {
     private void checkDuplicateEmailAndNickName( MemberRegisterRequest requestDto ) {
 
         if ( memberRepository.findOneWithAuthoritiesByEmail( requestDto.getEmail() ).orElse( null ) != null ) {
-            throw new DuplicateMemberException( "이미 가입한 회원입니다." );
+            throw new DuplicateMemberException( "이미 존재하는 이메일입니다." );
         }
         if ( memberRepository.existsByNickName( requestDto.getNickName() ) ) {
             throw new DuplicateMemberException( "이미 존재하는 닉네임입니다." );
