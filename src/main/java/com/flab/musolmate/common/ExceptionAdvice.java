@@ -1,15 +1,19 @@
 package com.flab.musolmate.common;
 
+import com.flab.musolmate.common.domain.api.ApiResponse;
+import com.flab.musolmate.member.exception.DuplicateMemberException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.*;
@@ -17,35 +21,33 @@ import java.util.*;
 @RestControllerAdvice
 @Slf4j
 public class ExceptionAdvice extends ResponseEntityExceptionHandler {
-    public ResponseEntity< Map<String, List<String>>> validationNotValidException( MethodArgumentNotValidException e) {
-        List< ObjectError > allErrors = e.getBindingResult().getAllErrors();
-
-        Map<String, List<String>> errorMessageMap = new HashMap<>();
-        List<String > errorMessages = new ArrayList<>();
-        for( ObjectError error : allErrors ) {
-            log.error( "error: {}", error );
-            log.error( "error: {}", error.getDefaultMessage() );
-            errorMessages.add( error.getDefaultMessage() );
-        }
-        errorMessageMap.put( "errors", errorMessages );
-        return new ResponseEntity<>( errorMessageMap, HttpStatus.BAD_REQUEST);
+    @Override
+    protected ResponseEntity< Object > handleMethodArgumentNotValid( MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request ) {
+        return ResponseEntity.status( HttpStatus.BAD_REQUEST ).body( ApiResponse.createFail( HttpStatus.BAD_REQUEST.value(), ex.getBindingResult() ) );
     }
 
-    @ExceptionHandler({ AuthenticationException.class })
-    @ResponseBody
-    public ResponseEntity<Map<String, List<String>>> handleAuthenticationException( AuthenticationException ex ) {
-        Map<String, List<String>> errorMessageMap = new HashMap<>();
-        errorMessageMap.put( "errors", Collections.singletonList( ex.getMessage() ) );
-
-        return new ResponseEntity<>( errorMessageMap, HttpStatus.UNAUTHORIZED);
+    @ExceptionHandler( DuplicateMemberException.class )
+    public ResponseEntity< ApiResponse< ? > > DuplicateMemberException( RuntimeException exception ) {
+        return ResponseEntity.status( HttpStatus.CONFLICT ).body( ApiResponse.createError( HttpStatus.CONFLICT.value(), exception.getMessage() ) );
     }
 
-    @ExceptionHandler({ AccessDeniedException.class })
+    @ExceptionHandler( { AuthenticationException.class } )
     @ResponseBody
-    public ResponseEntity<Map<String, List<String>>> handleAccessDeniedException( AccessDeniedException ex ) {
-        Map<String, List<String>> errorMessageMap = new HashMap<>();
-        errorMessageMap.put( "errors", Collections.singletonList( ex.getMessage() ) );
+    public ResponseEntity< ApiResponse< ? > > handleAuthenticationException( AuthenticationException ex ) {
+        return ResponseEntity.status( HttpStatus.UNAUTHORIZED ).body( ApiResponse.createError( HttpStatus.UNAUTHORIZED.value(), ex.getMessage() ) );
 
-        return new ResponseEntity<>( errorMessageMap, HttpStatus.FORBIDDEN );
+    }
+
+    @ExceptionHandler( { AccessDeniedException.class } )
+    @ResponseBody
+    public ResponseEntity< ApiResponse< ? > > handleAccessDeniedException( AccessDeniedException ex ) {
+        return ResponseEntity.status( HttpStatus.FORBIDDEN ).body( ApiResponse.createError( HttpStatus.FORBIDDEN.value(), ex.getMessage() ) );
+
+    }
+
+    @ExceptionHandler( Exception.class )
+    public ResponseEntity< ApiResponse< ? > > handleException( Exception ex ) {
+        log.error( "Exception", ex );
+        return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR ).body( ApiResponse.createError( HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage() ) );
     }
 }

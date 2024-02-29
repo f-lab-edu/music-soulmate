@@ -21,7 +21,7 @@ public class MemberApiController {
      * @param requestDto
      * @return
      */
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<Member> registerMember( @Valid @RequestBody MemberRegisterRequest requestDto) {
 
         Member registeredMember = memberBasicService.registerMember( requestDto );
