@@ -2,6 +2,7 @@ package com.flab.musolmate.common;
 
 import com.flab.musolmate.common.domain.api.ApiResponse;
 import com.flab.musolmate.member.exception.DuplicateMemberException;
+import com.flab.musolmate.member.exception.NotFoundMemberException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,10 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
     @ExceptionHandler( DuplicateMemberException.class )
     public ResponseEntity< ApiResponse< ? > > DuplicateMemberException( RuntimeException exception ) {
         return ResponseEntity.status( HttpStatus.CONFLICT ).body( ApiResponse.createError( HttpStatus.CONFLICT.value(), exception.getMessage() ) );
+    }
+    @ExceptionHandler( NotFoundMemberException.class )
+    public ResponseEntity< ApiResponse< ? > > NotFoundMemberException( RuntimeException exception ) {
+        return ResponseEntity.status( HttpStatus.NOT_FOUND ).body( ApiResponse.createError( HttpStatus.NOT_FOUND.value(), exception.getMessage() ) );
     }
 
     @ExceptionHandler( { AuthenticationException.class } )

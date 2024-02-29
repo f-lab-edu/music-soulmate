@@ -2,6 +2,7 @@ package com.flab.musolmate.member.web;
 
 import com.flab.musolmate.common.domain.api.ApiResponse;
 import com.flab.musolmate.member.domain.entity.Member;
+import com.flab.musolmate.member.exception.NotFoundMemberException;
 import com.flab.musolmate.member.service.MemberBasicService;
 import com.flab.musolmate.member.web.request.MemberRegisterRequest;
 import jakarta.validation.Valid;
@@ -33,17 +34,14 @@ public class MemberApiController {
     @GetMapping( "/{id}" )
     @PreAuthorize( "hasAnyAuthority('ROLE_ADMIN')" )
     public ResponseEntity< ApiResponse< Member > > getMember( @PathVariable Long id ) {
-        Member member = memberBasicService.getMemberWithAuthorities( id ).orElse( null );
-        if ( member == null ) {
-            return new ResponseEntity<>( HttpStatus.NOT_FOUND ); // TODO. 커스텀 예외 처리
-        }
+        Member member = memberBasicService.getMemberWithAuthorities( id ).orElseThrow( () -> new NotFoundMemberException( "회원 정보가 존재하지 않습니다." ) );
         return ResponseEntity.status( HttpStatus.OK ).body( ApiResponse.createSuccess( member ) );
     }
 
     @GetMapping( "/me" )
     @PreAuthorize( "hasAnyAuthority('ROLE_USER')" )
     public ResponseEntity< ApiResponse< Member > > getMyMember() {
-        Member member = memberBasicService.getMyMemberWithAthorities().orElse( null );
+        Member member = memberBasicService.getMyMemberWithAthorities().orElseThrow( () -> new NotFoundMemberException( "회원 정보가 존재하지 않습니다." ) );
         return ResponseEntity.status( HttpStatus.OK ).body( ApiResponse.createSuccess( member ) );
     }
 }
