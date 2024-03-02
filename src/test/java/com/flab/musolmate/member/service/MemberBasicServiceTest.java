@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import static com.flab.musolmate.common.exception.ExceptionEnum.MESSAGE_DUPLICATE_MEMBER_EXCEPTION_EMAIL;
+import static com.flab.musolmate.common.exception.ExceptionEnum.MESSAGE_DUPLICATE_MEMBER_EXCEPTION_NICKNAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -76,7 +78,7 @@ class MemberBasicServiceTest {
         // when
         assertThatThrownBy( () -> memberBasicService.registerMember( requestDto ) )
             .isInstanceOf( DuplicateMemberException.class )
-            .hasMessageContaining( "이미 가입한 회원입니다." );
+            .hasMessageContaining( MESSAGE_DUPLICATE_MEMBER_EXCEPTION_EMAIL );
 
     }
 
@@ -98,7 +100,7 @@ class MemberBasicServiceTest {
         // then
         assertThatThrownBy( () -> memberBasicService.registerMember( requestDto2 ) )
             .isInstanceOf( DuplicateMemberException.class )
-            .hasMessageContaining( "이미 존재하는 닉네임입니다." );
+            .hasMessageContaining( MESSAGE_DUPLICATE_MEMBER_EXCEPTION_NICKNAME );
 
     }
 

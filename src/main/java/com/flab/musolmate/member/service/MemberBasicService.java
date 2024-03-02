@@ -14,6 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collections;
 import java.util.Optional;
 
+import static com.flab.musolmate.common.exception.ExceptionEnum.MESSAGE_DUPLICATE_MEMBER_EXCEPTION_EMAIL;
+import static com.flab.musolmate.common.exception.ExceptionEnum.MESSAGE_DUPLICATE_MEMBER_EXCEPTION_NICKNAME;
+
 @RequiredArgsConstructor
 @Service
 public class MemberBasicService {
@@ -61,10 +64,10 @@ public class MemberBasicService {
     private void checkDuplicateEmailAndNickName( MemberRegisterRequest requestDto ) {
 
         if ( memberRepository.findOneWithAuthoritiesByEmail( requestDto.getEmail() ).orElse( null ) != null ) {
-            throw new DuplicateMemberException( "이미 존재하는 이메일입니다." );
+            throw new DuplicateMemberException( MESSAGE_DUPLICATE_MEMBER_EXCEPTION_EMAIL );
         }
         if ( memberRepository.existsByNickName( requestDto.getNickName() ) ) {
-            throw new DuplicateMemberException( "이미 존재하는 닉네임입니다." );
+            throw new DuplicateMemberException( MESSAGE_DUPLICATE_MEMBER_EXCEPTION_NICKNAME );
         }
     }
 

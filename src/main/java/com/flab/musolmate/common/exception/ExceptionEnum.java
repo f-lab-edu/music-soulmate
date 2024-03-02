@@ -15,6 +15,8 @@ public enum ExceptionEnum {
         DUPLICATE_MEMBER_EXCEPTION(40901 ),
         NOT_FOUND_MEMBER_EXCEPTION(40401 );
 
+        public static final String MESSAGE_DUPLICATE_MEMBER_EXCEPTION_EMAIL = "이미 존재하는 이메일입니다.";
+        public static final String MESSAGE_DUPLICATE_MEMBER_EXCEPTION_NICKNAME = "이미 존재하는 닉네임입니다.";
 
         private final int statusCode;
 
