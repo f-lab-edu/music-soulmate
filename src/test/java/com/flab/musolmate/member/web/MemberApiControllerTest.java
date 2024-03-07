@@ -48,7 +48,7 @@ public class MemberApiControllerTest {
             .nickName( nickName )
             .build();
 
-        String url = "http://localhost:" + port + "/members";
+        String url = "http://localhost:" + port + "/members/register";
 
         // when
         ResponseEntity<Object> responseEntity = restTemplate.postForEntity( url, requestDto, Object.class );
@@ -70,7 +70,7 @@ public class MemberApiControllerTest {
             .nickName( nickName )
             .build();
 
-        String url = "http://localhost:" + port + "/members";
+        String url = "http://localhost:" + port + "/members/register";
 
         // when
         ResponseEntity<Member> responseEntity = restTemplate.postForEntity( url, requestDto, Member.class );

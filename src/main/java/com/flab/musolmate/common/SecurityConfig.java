@@ -68,7 +68,7 @@ public class SecurityConfig {
             /* TODO. 로그인 API와 회원가입 API는 인증에서 제외 */
             .authorizeHttpRequests(authz -> authz
                 .requestMatchers("/auth/login").permitAll() // 로그인 경로는 인증 없이 접근 허용
-                .requestMatchers("/members").permitAll() // 회원가입 경로는 인증 없이 접근 허용
+                .requestMatchers("/members/register").permitAll() // 회원가입 경로는 인증 없이 접근 허용
                 .anyRequest().authenticated() // 그 외 경로는 인증 필요
             )
 
