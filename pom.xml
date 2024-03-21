@@ -108,6 +108,31 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</resource>
+			<resource>
+				<directory>src/main/resources-${environment}</directory>
+			</resource>
+		</resources>
 	</build>
+
+	<profiles>
+		<!-- dev: 개발 -->
+		<profile>
+			<id>dev</id>
+			<properties>
+				<environment>dev</environment>
+				<maven.test.skip>true</maven.test.skip>
+			</properties>
+		</profile>
+
+	</profiles>
 
 </project>
