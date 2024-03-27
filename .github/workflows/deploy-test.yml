@@ -3,6 +3,8 @@ name: test server CI/CD
 on:
   push:
     branches: [ "release" ]
+  pull_request:
+    branches: [ "release" ]
 
 env:
   S3_BUCKET_NAME: music-soulmate
@@ -20,5 +22,7 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+    - name: Grant execute permission for mvnw
+      run: chmod +x mvnw
     - name: Build with Maven
-      run: mvn -B package --file pom.xml
+      run: ./mvnw clean package -P dev
