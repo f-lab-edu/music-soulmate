@@ -3,6 +3,8 @@ name: test server CI/CD
 on:
   push:
     branches: [ "release" ]
+  pull_request:
+    branches: [ "release" ]
 
 env:
   S3_BUCKET_NAME: music-soulmate
